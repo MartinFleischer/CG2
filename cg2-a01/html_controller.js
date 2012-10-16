@@ -106,23 +106,23 @@ define(["jquery", "straight_line", "circle"],
 
             var obj = sceneController.getSelectedObject();
 
-            obj.lineStyle.width = ($("#inputLineThikness").attr("value"));
+            obj.lineStyle.width = parseFloat(($("#inputLineThikness").attr("value")));
             obj.lineStyle.color = ($("#inputLineColor").attr("value"));
 
             if(obj instanceof StraightLine){
 
-                obj.p0[0] = ($("#inputP0X").attr("value"));
-                obj.p0[1] = ($("#inputP0Y").attr("value"));
-                obj.p1[0] = ($("#inputP1X").attr("value"));
-                obj.p1[1] = ($("#inputP1Y").attr("value"));
+                obj.p0[0] = parseFloat(($("#inputP0X").attr("value")));
+                obj.p0[1] = parseFloat(($("#inputP0Y").attr("value")));
+                obj.p1[0] = parseFloat(($("#inputP1X").attr("value")));
+                obj.p1[1] = parseFloat(($("#inputP1Y").attr("value")));
 
             }
 
             if(obj instanceof Circle){
 
-                obj.center_point[0] = ($("#inputCenterX").attr("value"));
-                obj.center_point[1] = ($("#inputCenterY").attr("value"));
-                obj.radius = ($("#inputRadius").attr("value"));
+                obj.center_point[0] = parseFloat(($("#inputCenterX").attr("value")));
+                obj.center_point[1] = parseFloat(($("#inputCenterY").attr("value")));
+                obj.radius = parseFloat(($("#inputRadius").attr("value")));
 
             }
 
