@@ -42,14 +42,24 @@ input {
     width:80px;
 }
 
+button {
+    width: 175px;
+}
+
 .param_container{
     width: 200px;
 }
 
-.param_container ul{
-    list-style-type: none;    
+#create_button_container ul{
+    list-style-type: none;
 }
 
-.param_container ul li{
-    margin-left: -20px;
+ul{
+    list-style-type: none;
+    padding-left: 5px;    
+}
+
+.lableContainer{
+    width: 80px;
+    float: left;
 }

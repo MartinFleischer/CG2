@@ -39,23 +39,83 @@
         <div id="create_button_container" class="param_container">
           <h3>Create Objects:</h3>
           <ul>
-        
-          <li> <button id="btnNewLine" type="button">New Line</button> </li>
-          <li> <button id="btnNewCircle" type="button">New Circle </button> </li>
-         
-         </ul>
+            <li> 
+              <button id="btnNewLine" type="button">New Line</button>
+            </li>
+            <li>
+              <button id="btnNewCircle" type="button">New Circle</button>
+            </li>    
+            <li>
+              <button id="btnNewParametricCurve" type="button">New Parametric Curve</button>
+            </li>      
+          </ul>
         </div>
 
         <div id="line_properties_container" class="param_container">
-          <h3>Line Properties:</h3>
-          <ul id="linePropertyList"></ul>
-        </div>
+          <h3>Properties:</h3>
+          <ul id="properties">
+            <li id="lineColor">
+              <div class="lableContainer"><label for="inputLineColor">color:</label></div> 
+              <input id="inputLineColor" class="input" type="color" name="Line Color"></input> 
+            </li>
 
-        <div id="create_button_container" class="param_container">
-          <h3>Object Properties:</h3>
-          <ul id="objectPropertyList"></ul>
-        </div>
+            <li>   
+              <div class="lableContainer"><label for="inputLineThikness">thikness:</label></div>
+              <input id="inputLineThikness" class="input" type="number" name="Line Thikness" min="1" max="5"></input> 
+            </li>
+        
+          <div id="propsStraightLine" class="props">
+            <li>
+              <div class="lableContainer"><lable>p0X:</lable></div>
+              <input id="inputStraightLineP0X" class="input maxX" type="number" name="Straight Line P0X" min="20"></input> 
+            </li>
+            <li>
+              <div class="lableContainer"><lable>p0Y:</lable></div>
+              <input id="inputStraightLineP0Y" class="input maxY" type="number" name="Straight Line P0Y" min="20">
+            </input> 
+            </li>
+            <li>
+              <div class="lableContainer"><lable>p1X:</lable></div>
+              <input id="inputStraightLineP1X" class="input maxX" type="number" name="Straight Line P1X" min="20"></input> 
+            </li>
+             <li>
+              <div class="lableContainer"><lable>p1Y:</lable></div>
+              <input id="inputStraightLineP1Y" class="input maxY" type="number" name="Straight Line P1Y" min="20"></input> 
+            </li>
+          </div>
 
+          <div id="propsCircle" class="props">
+            <li>
+              <div class="lableContainer"><lable>centerX:</lable></div>
+              <input id="inputCenterX" class="input maxX" type="number" name="Center X" min="20"></input> 
+            </li>
+            <li>
+              <div class="lableContainer"><lable>centerY:</lable></div>
+              <input id="inputCenterY" class="input maxY" type="number" name="Center Y" min="20"></input> 
+            </li>
+            <li>
+              <div class="lableContainer"><lable>radius:</lable></div>
+              <input id="inputRadius" class="input" type="number" name="Radius" min="5" max="200">
+              </input>
+            </li>
+          </div>
+
+          <div id="propsParametricCurve" class="props">
+            <li>
+              <div class="lableContainer"><lable>x(t):</lable></div>
+              <input id="inputParametricCurveX(t)" class="input maxX" type="number" name="Parametric Curve X(t)" min="20"></input> 
+            </li>
+            <li>
+              <div class="lableContainer"><lable>y(t):</lable></div>
+              <input id="inputParametricCurveY(t)" class="input maxY" type="number" name="Parametric CurveY (t)" min="20"></input> 
+            </li>
+            <li>
+              <div class="lableContainer"><lable>segments:</lable></div>
+              <input id="inputSegments" class="input" type="number" name="Segments" min="20"></input> 
+            </li>
+          </div>
+          </ul>          
+        </div>
     </div>
     
     <div style="float:clear;">

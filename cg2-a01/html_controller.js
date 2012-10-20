@@ -11,8 +11,8 @@
 
  
 /* requireJS module definition */
-define(["jquery", "straight_line", "circle"], 
-       (function($, StraightLine, Circle) {
+define(["jquery", "straight_line", "circle", "parametric_curve"], 
+       (function($, StraightLine, Circle, ParametricCurve) {
 
     "use strict"; 
                 
@@ -21,7 +21,6 @@ define(["jquery", "straight_line", "circle"],
      * and provide them with a closure defining context and scene
      */
     var HtmlController = function(context,scene,sceneController) {
-    
     
         // generate random X coordinate within the canvas
         var randomX = function() { 
@@ -77,29 +76,27 @@ define(["jquery", "straight_line", "circle"],
         var showPropertiesOfSelection = function(){
             var obj = sceneController.getSelectedObject();
 
-            var _lineColor = obj.lineStyle.color;
-            var _lineWidth = obj.lineStyle.width;
-
-            $("#linePropertyList").html('<li><label for"inputLineColor">color:</label><input id="inputLineColor" class="input" type="color" name="Line Color" value="'+ _lineColor +'"></input> </li>');
-            $("#linePropertyList").append('<li><label for"inputLineThikness">thikness:</label><input id="inputLineThikness" class="input" type="number" name="Line Color" min="1" max="5" value="'+ _lineWidth +'"></input> </li>');
-
             var maxX = context.canvas.width-10;
             var maxY = context.canvas.height-10;
+            $(".maxX").attr("max",maxX);
+            $(".maxY").attr("max",maxY);
+
+            $(".props").hide();
 
             if(obj instanceof StraightLine){
-                $("#objectPropertyList").html('<li><lable>p0X:</lable><input id="inputP0X" class="input" type="number" name="Line Color" min="20" max="'+ maxX +'" value="'+ obj.p0[0] +'"></input> </li>');
-                $("#objectPropertyList").append('<li><lable>p0Y:</lable><input id="inputP0Y" class="input" type="number" name="Line Color" min="20" max="'+ maxY +'" value="'+ obj.p0[1] +'"></input> </li>');
-                $("#objectPropertyList").append('<li><lable>p1X:</lable><input id="inputP1X" class="input" type="number" name="Line Color" min="20" max="'+ maxX +'" value="'+ obj.p1[0] +'"></input> </li>');
-                $("#objectPropertyList").append('<li><lable>p1Y:</lable><input id="inputP1Y" class="input" type="number" name="Line Color" min="20" max="'+ maxY +'" value="'+ obj.p1[1] +'"></input> </li>');
+                $("#propsStraightLine").show();
             }
 
             if(obj instanceof Circle){
-                $("#objectPropertyList").html('<li><lable>centerX:</lable><input id="inputCenterX" class="input" type="number" name="Line Color" min="20" max="'+ maxX +'" value="'+ obj.center_point[0] +'"></input> </li>');
-                $("#objectPropertyList").append('<li><lable>centerY:</lable><input id="inputCenterY" class="input" type="number" name="Line Color" min="20" max="'+ maxY +'" value="'+ obj.center_point[1] +'"></input> </li>');
-                $("#objectPropertyList").append('<li><lable>radius:</lable><input id="inputRadius" class="input" type="number" name="Line Color" min="5" max="200" value="'+ obj.radius +'"></input> </li>');
+                $("#propsCircle").show();
+            }
+
+            if(obj instanceof ParametricCurve){
+                $("#propsParametricCurve").show();
             }
 
             $(".input").change(inputChanged);
+            updateInputFields();
         };
 
         var inputChanged = function(){
@@ -111,10 +108,10 @@ define(["jquery", "straight_line", "circle"],
 
             if(obj instanceof StraightLine){
 
-                obj.p0[0] = parseFloat(($("#inputP0X").attr("value")));
-                obj.p0[1] = parseFloat(($("#inputP0Y").attr("value")));
-                obj.p1[0] = parseFloat(($("#inputP1X").attr("value")));
-                obj.p1[1] = parseFloat(($("#inputP1Y").attr("value")));
+                obj.p0[0] = parseFloat(($("#inputStraightLineP0X").attr("value")));
+                obj.p0[1] = parseFloat(($("#inputStraightLineP0Y").attr("value")));
+                obj.p1[0] = parseFloat(($("#inputStraightLineP1X").attr("value")));
+                obj.p1[1] = parseFloat(($("#inputStraightLineP1Y").attr("value")));
 
             }
 
@@ -126,8 +123,41 @@ define(["jquery", "straight_line", "circle"],
 
             }
 
+            if(obj instanceof ParametricCurve){
+                obj.segments = parseFloat($("#inputSegments").attr("value"));
+            }
+
             // redraw the scene
             sceneController.scene.draw(context);
+
+        };
+
+        var updateInputFields = function(){
+            var obj = sceneController.getSelectedObject();
+
+            $("#inputLineThikness").attr("value", parseFloat(obj.lineStyle.width));
+            $("#inputLineColor").attr("value",obj.lineStyle.color);
+
+            if(obj instanceof StraightLine){
+
+                $("#inputStraightLineP0X").attr("value",parseFloat(obj.p0[0]));
+                $("#inputStraightLineP0Y").attr("value",parseFloat(obj.p0[1]));
+                $("#inputStraightLineP1X").attr("value",parseFloat(obj.p1[0]));
+                $("#inputStraightLineP1Y").attr("value",parseFloat(obj.p1[1]));
+
+            }
+
+            if(obj instanceof Circle){
+
+                $("#inputCenterX").attr("value",parseFloat(obj.center_point[0]));
+                $("#inputCenterY").attr("value",parseFloat(obj.center_point[1]));
+                $("#inputRadius").attr("value",parseFloat(obj.radius));
+
+            }
+
+            if(obj instanceof ParametricCurve){
+                $("#inputSegments").attr("value",parseFloat(obj.segments));
+            }
 
         };
         
@@ -176,24 +206,46 @@ define(["jquery", "straight_line", "circle"],
                         
         }));
 
-        //     var obj = sceneController.getSelectedObject();
-        //     console.log("change");
+        /*
+         * event handler for "new paramtric curve button".
+         */
+        $("#btnNewParametricCurve").click( (function() {
+        
+            // create the actual circle and add it to the scene
+            var style = { 
+                width: Math.floor(Math.random()*3)+1,
+                color: randomColor()
+            };
 
-        //     if(obj instanceof StraightLine){
-        //     }
+            var f_t = function(t){
+                return parseFloat(350 + 100 * Math.sin(t));
+            };
 
-        //     if(obj instanceof Circle){
-        //         obj.radius = $("#inputRadius").attr("value");
-        //     }
+            var g_t = function(t){
+                return parseFloat(150 + 100 * Math.cos(t));
+            };
 
-        // }));
+            var p_curve = new ParametricCurve(0, 5, f_t , g_t , 20, style);
+            scene.addObjects([p_curve]);
+
+            // deselect all objects, then select the newly created object
+            sceneController.deselect();
+            sceneController.select(p_curve); // this will also redraw
+                        
+        }));
 
         // setting up callbacks
         sceneController.onSelection(showPropertiesOfSelection);
-        sceneController.onObjChange(showPropertiesOfSelection);
-        
-    
+        sceneController.onObjChange(updateInputFields);
+           
     };
+
+    
+
+    // initializes 
+    (function init() {
+        $(".props").hide();
+    })();
 
     // return the constructor function 
     return HtmlController;
