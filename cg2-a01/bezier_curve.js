@@ -11,6 +11,14 @@ define(["util","vec2","scene","point_dragger", "polygon_dragger"],
 
 		this.segments = segments;
 		this.pointArr = pointArr;
+		this.p0 = this.pointArr[0];
+		this.p1 = this.pointArr[1];
+		this.p2 = this.pointArr[2];
+		this.p3 = this.pointArr[3];
+
+		this.calcP = function(coord, t) {
+			return (Math.pow(1 - t, 3) * this.p0[coord]) + (3 * Math.pow(1 - t, 2) * t  * this.p1[coord]) + (3 * (1 - t) * Math.pow(t, 2) * this.p2[coord]) + (Math.pow(t, 3) * this.p3[coord]) ;
+		};
         
         // draw style for drawing the line
         this.lineStyle = lineStyle || { width: "2", color: "#0000AA" };
@@ -20,24 +28,14 @@ define(["util","vec2","scene","point_dragger", "polygon_dragger"],
 	BezierCurve.prototype.draw = function(context) {		
 		
 		context.beginPath();
-
-		var p0 = this.pointArr[0];
-		var p1 = this.pointArr[1];
-		var p2 = this.pointArr[2];
-		var p3 = this.pointArr[3];
-
-		context.moveTo(p0[0],p0[1]);
-
-		var calcP = function(coord, t) {
-			return (Math.pow(1 - t, 3) * p0[coord]) + (3 * Math.pow(1 - t, 2) * t  * p1[coord]) + (3 * (1 - t) * Math.pow(t, 2) * p2[coord]) + (Math.pow(t, 3) * p3[coord]) ;
-		};
+		context.moveTo(this.p0[0], this.p0[1]);
 
 		for(var i = 1; i <= this.segments; i++){
 
 			var t = 1 / this.segments * i;
 
-			var px = calcP(0, t);
-			var py = calcP(1, t);
+			var px = this.calcP(0, t);
+			var py = this.calcP(1, t);
 
 			context.lineTo(px, py);
 		}
@@ -50,7 +48,38 @@ define(["util","vec2","scene","point_dragger", "polygon_dragger"],
         context.stroke(); 
 	};
 
-	BezierCurve.prototype.isHit = function(context,pos) {
+	BezierCurve.prototype.isHit = function(context,pos) {	
+
+		for(var i = 1; i <= this.segments; i++){
+
+			var t0 = 1 / this.segments * i - 1;
+			var t1 = 1 / this.segments * i;
+
+			var p0 = [this.calcP(0, t0), this.calcP(1, t0)];
+			var p1 = [this.calcP(0, t1), this.calcP(1, t1)]
+		
+			// project point on line, get parameter of that projection point
+	        var t = vec2.projectPointOnLine(pos, p0, p1);
+	                
+	        // outside the line segment?
+	        if(t<0.0 || t>1) {
+	        	p0 = p1;
+	            continue; 
+	        }
+	        
+	        // coordinates of the projected point 
+	        var p = vec2.add(p0, vec2.mult( vec2.sub(p1,p0), t ));
+
+	        // distance of the point from the line
+	        var d = vec2.length(vec2.sub(p,pos));
+	        
+	        // allow 2 pixels extra "sensitivity"
+	        if( d<=(this.lineStyle.width/2)+2 ){
+	        	return true;
+	        }
+	        p0 = p1;
+	    }
+
 	    return false;
 	};
 
@@ -62,14 +91,14 @@ define(["util","vec2","scene","point_dragger", "polygon_dragger"],
         var draggers = [];
 
         var _bezier = this;
-        var getP0 = function() { return _bezier.pointArr[0]; };
-        var setP0 = function(dragEvent) { _bezier.pointArr[0] = dragEvent.position; };
-        var getP1 = function() { return _bezier.pointArr[1]; };
-        var setP1 = function(dragEvent) { _bezier.pointArr[1] = dragEvent.position; };
-        var getP2 = function() { return _bezier.pointArr[2]; };
-        var setP2 = function(dragEvent) { _bezier.pointArr[2] = dragEvent.position; };
-        var getP3 = function() { return _bezier.pointArr[3]; };
-        var setP3 = function(dragEvent) { _bezier.pointArr[3] = dragEvent.position; };
+        var getP0 = function() { return _bezier.p0; };
+        var setP0 = function(dragEvent) { _bezier.p0 = dragEvent.position; };
+        var getP1 = function() { return _bezier.p1; };
+        var setP1 = function(dragEvent) { _bezier.p1 = dragEvent.position; };
+        var getP2 = function() { return _bezier.p2; };
+        var setP2 = function(dragEvent) { _bezier.p2 = dragEvent.position; };
+        var getP3 = function() { return _bezier.p3; };
+        var setP3 = function(dragEvent) { _bezier.p3 = dragEvent.position; };
     
         draggers.push(new PolygonDragger(getP0, setP0, getP1, polyDraggerStyle));
         draggers.push(new PolygonDragger(getP1, setP1, getP2, polyDraggerStyle));
