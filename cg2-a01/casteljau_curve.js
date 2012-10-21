@@ -6,44 +6,39 @@ define(["util","vec2","scene","point_dragger", "polygon_dragger"],
 	
 	"use strict";
 	
-	var BezierCurve = function(pointArr, segments, lineStyle, tickMarks){
+	var CasteljauCurve = function(pointArr, t, lineStyle, tickMarks){
 
 
-		this.segments = segments;
+		this.t = t;
 		this.pointArr = pointArr;
 		this.p0 = this.pointArr[0];
 		this.p1 = this.pointArr[1];
 		this.p2 = this.pointArr[2];
 		this.p3 = this.pointArr[3];
 		this.tickMarks = tickMarks;
-
-		this.calcP = function(coord, t) {
-			return (Math.pow(1 - t, 3) * this.p0[coord]) + (3 * Math.pow(1 - t, 2) * t  * this.p1[coord]) + (3 * (1 - t) * Math.pow(t, 2) * this.p2[coord]) + (Math.pow(t, 3) * this.p3[coord]) ;
-		};
         
         // draw style for drawing the line
         this.lineStyle = lineStyle || { width: "2", color: "#0000AA" };
 		
 	};
 
-	BezierCurve.prototype.draw = function(context) {		
+	CasteljauCurve.prototype.draw = function(context) {		
 		
 		context.beginPath();
 		context.moveTo(this.p0[0], this.p0[1]);
-		var pointsOnLine =[];
-		pointsOnLine.push([this.p0[0], this.p0[1]]);
+		
+		var casteljauAlgorithm = function(){
 
-		for(var i = 1; i <= this.segments; i++){
+	    var a0 = vec2.add(vec2.mult(this.p0, (1 − this.t)), vec2.mult(this.p1 ,this.t));
+	    var a1 = vec2.add(vec2.mult(this.p1, (1 − this.t)), vec2.mult(this.p2 ,this.t));
+	    var a2 = vec2.add(vec2.mult(this.p2, (1 − this.t)), vec2.mult(this.p3 ,this.t));
 
-			var t = 1 / this.segments * i;
+	    var b0 = vec2.add(vec2.mult(a0, (1 − this.t)), vec2.mult(a1 ,this.t));
+	    var b1 = vec2.add(vec2.mult(a1, (1 − this.t)), vec2.mult(a2 ,this.t));
 
-			var px = this.calcP(0, t);
-			var py = this.calcP(1, t);
+	    var c0 = vec2.add(vec2.mult(b0, (1 − this.t)), vec2.mult(b1 ,this.t));
 
-			pointsOnLine.push([px,py]);
-
-			context.lineTo(px, py);
-		}
+		};
 
 		// set drawing style
         context.lineWidth = this.lineStyle.width;
@@ -51,37 +46,9 @@ define(["util","vec2","scene","point_dragger", "polygon_dragger"],
 
 		// actually start drawing
         context.stroke(); 
-
-        if(this.tickMarks){
-        	
-        	context.beginPath();
-
-			for(var i = 1; i < this.segments; i++){
-
-				var tang =  vec2.sub(pointsOnLine[(i+1)], pointsOnLine[(i-1)]) ;
-				var tangNorm = [tang[1] * (-1), tang[0]];
-
-				var normalizedVecN = vec2.mult(tangNorm, (1 / vec2.length(tangNorm)));
-				var pTick0 =  vec2.add(pointsOnLine[i], vec2.mult(normalizedVecN, 10));
-				var pTick1 =  vec2.sub(pointsOnLine[i], vec2.mult(normalizedVecN, 10));
-
-				context.moveTo(pTick0[0],pTick0[1]);
-				context.lineTo(pTick1[0],pTick1[1]);
-			}
-
-		// draw style
-	    context.lineWidth = 1;
-	    context.strokeStyle = "#FF711B";
-	    context.fillStyle = "#FF711B";
-	    
-	    // start drawing
-	    context.stroke();	
-	
-		}
-	
 	};
 
-	BezierCurve.prototype.isHit = function(context,pos) {	
+	CasteljauCurve.prototype.isHit = function(context,pos) {	
 
 		for(var i = 1; i <= this.segments; i++){
 
@@ -117,7 +84,7 @@ define(["util","vec2","scene","point_dragger", "polygon_dragger"],
 	};
 
 	// returns an empty list
-    BezierCurve.prototype.createDraggers = function() {
+    CasteljauCurve.prototype.createDraggers = function() {
     	
     	var polyDraggerStyle = { radius:7, color: "#FF0000", width:0.3, fill:true };
     	var draggerStyle = { radius:4, color: this.lineStyle.color, width:0, fill:true };
@@ -146,6 +113,6 @@ define(["util","vec2","scene","point_dragger", "polygon_dragger"],
    		return draggers;
     };
 
-    return BezierCurve;
+    return CasteljauCurve;
 
 }));

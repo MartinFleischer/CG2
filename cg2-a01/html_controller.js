@@ -99,6 +99,10 @@ define(["jquery", "straight_line", "circle", "parametric_curve", "bezier_curve"]
                 $("#propsParametricCurve").show();
             }
 
+            if(obj instanceof BezierCurve){
+                $("#propsBezierCurve").show();
+            }
+
             $(".input").change(inputChanged);
             updateInputFields();
         };
@@ -130,10 +134,35 @@ define(["jquery", "straight_line", "circle", "parametric_curve", "bezier_curve"]
             if(obj instanceof ParametricCurve){
                 obj.t_min = parseFloat($("#inputMinT").attr("value"));
                 obj.t_max = parseFloat($("#inputMaxT").attr("value"));
-                obj.segments = parseFloat($("#inputSegments").attr("value"));
+                obj.segments = parseFloat($("#inputSegmentsParametricCurve").attr("value"));
                 
                 obj.func_f = $("#inputParametricCurveX_t").attr("value");
                 obj.func_g = $("#inputParametricCurveY_t").attr("value");
+            
+                if( $("#checkboxParametricCurve").is(':checked') ){
+                    obj.tickMarks = true;
+                } else { 
+                    obj.tickMarks = false; 
+                }
+
+            }
+
+            if(obj instanceof BezierCurve){
+
+                obj.p0[0] = parseFloat($("#inputBezierCurveP0X").attr("value"));
+                obj.p0[1] = parseFloat($("#inputBezierCurveP0Y").attr("value"));
+                obj.p1[0] = parseFloat($("#inputBezierCurveP1X").attr("value"));
+                obj.p1[1] = parseFloat($("#inputBezierCurveP1Y").attr("value"));
+                obj.p2[0] = parseFloat($("#inputBezierCurveP2X").attr("value"));
+                obj.p2[1] = parseFloat($("#inputBezierCurveP2Y").attr("value"));
+                obj.p3[0] = parseFloat($("#inputBezierCurveP3X").attr("value"));
+                obj.p3[1] = parseFloat($("#inputBezierCurveP3Y").attr("value"));
+                obj.segments = parseFloat($("#inputSegmentsBezierCurve").attr("value"));
+                if( $("#checkboxBezierCurve").is(':checked') ){
+                    obj.tickMarks = true;
+                } else { 
+                    obj.tickMarks = false; 
+                }
             }
 
             // redraw the scene
@@ -167,11 +196,24 @@ define(["jquery", "straight_line", "circle", "parametric_curve", "bezier_curve"]
             if(obj instanceof ParametricCurve){
                 $("#inputMinT").attr("value", parseFloat(obj.t_min));
                 $("#inputMaxT").attr("value", parseFloat(obj.t_max));
-                $("#inputSegments").attr("value", parseFloat(obj.segments));
+                $("#inputSegmentsParametricCurve").attr("value", parseFloat(obj.segments));
             
                 $("#inputParametricCurveX_t").attr("value", obj.func_f);
                 $("#inputParametricCurveY_t").attr("value", obj.func_g);
 
+            }
+
+            if(obj instanceof BezierCurve){
+
+                $("#inputBezierCurveP0X").attr("value", parseFloat(obj.p0[0]));
+                $("#inputBezierCurveP0Y").attr("value", parseFloat(obj.p0[1]));
+                $("#inputBezierCurveP1X").attr("value", parseFloat(obj.p1[0]));
+                $("#inputBezierCurveP1Y").attr("value", parseFloat(obj.p1[1]));
+                $("#inputBezierCurveP2X").attr("value", parseFloat(obj.p2[0]));
+                $("#inputBezierCurveP2Y").attr("value", parseFloat(obj.p2[1]));
+                $("#inputBezierCurveP3X").attr("value", parseFloat(obj.p3[0]));
+                $("#inputBezierCurveP3Y").attr("value", parseFloat(obj.p3[1]));
+                $("#inputSegmentsBezierCurve").attr("value", parseFloat(obj.segments));
             }
 
         };
@@ -238,7 +280,7 @@ define(["jquery", "straight_line", "circle", "parametric_curve", "bezier_curve"]
 
             var func_g = _y + " + 100 * Math.cos(t)"
 
-            var p_curve = new ParametricCurve(0, 5, func_f , func_g , 2 + randomIntValue(18), style);
+            var p_curve = new ParametricCurve(0, 5, func_f , func_g , 2 + randomIntValue(18), style, false);
             scene.addObjects([p_curve]);
 
             // deselect all objects, then select the newly created object
@@ -265,7 +307,7 @@ define(["jquery", "straight_line", "circle", "parametric_curve", "bezier_curve"]
             var p3 = [200,300];
             pointArr.push(p0,p1,p2,p3);
 
-            var b_curve = new BezierCurve(pointArr,2 + randomIntValue(18), style);
+            var b_curve = new BezierCurve(pointArr,2 + randomIntValue(18), style, false);
             scene.addObjects([b_curve]);
 
             // deselect all objects, then select the newly created object

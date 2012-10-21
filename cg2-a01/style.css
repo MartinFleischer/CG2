@@ -77,3 +77,11 @@ ul{
     width: 160px;
     margin-left: 5px;
 }
+
+#propsBezierCurve .lableContainer{
+    width: 80px;
+}
+
+#propsBezierCurve .input{
+    width: 50px;
+}

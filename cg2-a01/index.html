@@ -59,76 +59,113 @@
           <ul id="properties">
             <li id="lineColor">
               <div class="lableContainer"><label for="inputLineColor">color:</label></div> 
-              <input id="inputLineColor" class="input" type="color" name="Line Color"></input> 
+              <input id="inputLineColor" class="input" type="color" name="Line Color"> 
             </li>
 
             <li>   
               <div class="lableContainer"><label for="inputLineThikness">thikness:</label></div>
-              <input id="inputLineThikness" class="input" type="number" name="Line Thikness" min="1" max="5"></input> 
+              <input id="inputLineThikness" class="input" type="number" name="Line Thikness" min="1" max="5"> 
             </li>
         
           <div id="propsStraightLine" class="props">
             <li>
               <div class="lableContainer"><lable>p0X:</lable></div>
-              <input id="inputStraightLineP0X" class="input maxX" type="number" name="Straight Line P0X" min="20"></input> 
+              <input id="inputStraightLineP0X" class="input maxX" type="number" name="Straight Line P0X" min="20"> 
             </li>
             <li>
               <div class="lableContainer"><lable>p0Y:</lable></div>
               <input id="inputStraightLineP0Y" class="input maxY" type="number" name="Straight Line P0Y" min="20">
-              </input> 
+               
             </li>
             <li>
               <div class="lableContainer"><lable>p1X:</lable></div>
-              <input id="inputStraightLineP1X" class="input maxX" type="number" name="Straight Line P1X" min="20"></input> 
+              <input id="inputStraightLineP1X" class="input maxX" type="number" name="Straight Line P1X" min="20"> 
             </li>
              <li>
               <div class="lableContainer"><lable>p1Y:</lable></div>
-              <input id="inputStraightLineP1Y" class="input maxY" type="number" name="Straight Line P1Y" min="20"></input> 
+              <input id="inputStraightLineP1Y" class="input maxY" type="number" name="Straight Line P1Y" min="20"> 
             </li>
           </div>
 
           <div id="propsCircle" class="props">
             <li>
               <div class="lableContainer"><lable>centerX:</lable></div>
-              <input id="inputCenterX" class="input maxX" type="number" name="Center X" min="20"></input> 
+              <input id="inputCenterX" class="input maxX" type="number" name="Center X" min="20"> 
             </li>
             <li>
               <div class="lableContainer"><lable>centerY:</lable></div>
-              <input id="inputCenterY" class="input maxY" type="number" name="Center Y" min="20"></input> 
+              <input id="inputCenterY" class="input maxY" type="number" name="Center Y" min="20"> 
             </li>
             <li>
               <div class="lableContainer"><lable>radius:</lable></div>
               <input id="inputRadius" class="input" type="number" name="Radius" min="5" max="200">
-              </input>
+              
             </li>
           </div>
 
           <div id="propsParametricCurve" class="props">
             <li>
               <div class="evalInput"><lable>x(t):</lable>
-                <input id="inputParametricCurveX_t" class="input maxX" type="number" name="Parametric Curve X(t)" min="20"></input> 
+                <input id="inputParametricCurveX_t" class="input maxX" type="number" name="Parametric Curve X(t)" min="20"> 
               </div>
             </li>
             <li>
               <div class="evalInput"><lable>y(t):</lable>
-                <input id="inputParametricCurveY_t" class="input maxY" type="number" name="Parametric CurveY (t)" min="20"></input> 
+                <input id="inputParametricCurveY_t" class="input maxY" type="number" name="Parametric CurveY (t)" min="20"> 
               </div>
             </li>
             <li>
               <div class="lableContainer"><lable>min t:</lable></div>
-              <input id="inputMinT" class="input min t" type="number" name="Min T" min="0"></input> 
+              <input id="inputMinT" class="input min t" type="number" name="Min T" min="0"> 
             </li>
             <li>
               <div class="lableContainer"><lable>max t:</lable></div>
-              <input id="inputMaxT" class="input max t" type="number" name="Max T" min="0"></input> 
+              <input id="inputMaxT" class="input max t" type="number" name="Max T" min="0"> 
             </li>
             <li>
               <div class="lableContainer"><lable>segments:</lable></div>
-              <input id="inputSegments" class="input" type="number" name="Segments" min="20"></input> 
+              <input id="inputSegmentsParametricCurve" class="input" type="number" name="Segments" min="20"> 
             </li>
-          </div>
-          </ul>          
-        </div>
+            <li>
+              <div class="lableContainer"><lable>Tickmarks:</lable></div>
+              <input id="checkboxParametricCurve" class="input" type="checkbox">
+            </li>
+          </div>         
+
+          <div id="propsBezierCurve" class="props">
+            <li>
+              <div class="lableContainer"><lable>p0:</lable></div>
+                <input id="inputBezierCurveP0X" class="input maxX" type="number" name="Straight Line P0X" min="20"> 
+                <input id="inputBezierCurveP0Y" class="input maxY" type="number" name="Straight Line P0Y" min="20">
+                 
+            </li>
+            <li>
+                <div class="lableContainer"><lable>p1:</lable></div>
+                <input id="inputBezierCurveP1X" class="input maxX" type="number" name="Bezier Curve P1X" min="20"> 
+                <input id="inputBezierCurveP1Y" class="input maxY" type="number" name="Bezier Curve P1Y" min="20"> 
+            </li>
+            <li>
+              <div class="lableContainer"><lable>p2:</lable></div>
+                <input id="inputBezierCurveP2X" class="input maxX" type="number" name="Bezier Curve P2X" min="20"> 
+                <input id="inputBezierCurveP2Y" class="input maxY" type="number" name="Bezier Curve P2Y" min="20">
+                 
+              </li>
+            <li>
+                <div class="lableContainer"><lable>p3:</lable></div>
+                <input id="inputBezierCurveP3X" class="input maxX" type="number" name="Bezier Curve P3X" min="20"> 
+                <input id="inputBezierCurveP3Y" class="input maxY" type="number" name="Bezier Curve P3Y" min="20"> 
+            </li>
+            <li>
+              <div class="lableContainer"><lable>segments:</lable></div>
+              <input id="inputSegmentsBezierCurve" class="input" type="number" name="Segments" min="20"> 
+            </li>
+            <li>
+              <div class="lableContainer"><lable>Tickmarks:</lable></div>
+              <input id="checkboxBezierCurve" class="input" type="checkbox">
+            </li>
+          </div> 
+        </ul>          
+      </div>
     </div>
     
     <div style="float:clear;">
