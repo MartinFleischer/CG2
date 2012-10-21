@@ -11,8 +11,8 @@
 
  
 /* requireJS module definition */
-define(["jquery", "straight_line", "circle", "parametric_curve"], 
-       (function($, StraightLine, Circle, ParametricCurve) {
+define(["jquery", "straight_line", "circle", "parametric_curve", "bezier_curve"], 
+       (function($, StraightLine, Circle, ParametricCurve, BezierCurve) {
 
     "use strict"; 
                 
@@ -21,6 +21,10 @@ define(["jquery", "straight_line", "circle", "parametric_curve"],
      * and provide them with a closure defining context and scene
      */
     var HtmlController = function(context,scene,sceneController) {
+
+        var randomIntValue = function(max) {
+            return Math.floor(Math.random() * max);
+        };
     
         // generate random X coordinate within the canvas
         var randomX = function() { 
@@ -103,28 +107,33 @@ define(["jquery", "straight_line", "circle", "parametric_curve"],
 
             var obj = sceneController.getSelectedObject();
 
-            obj.lineStyle.width = parseFloat(($("#inputLineThikness").attr("value")));
+            obj.lineStyle.width = parseFloat($("#inputLineThikness").attr("value"));
             obj.lineStyle.color = ($("#inputLineColor").attr("value"));
 
             if(obj instanceof StraightLine){
 
-                obj.p0[0] = parseFloat(($("#inputStraightLineP0X").attr("value")));
-                obj.p0[1] = parseFloat(($("#inputStraightLineP0Y").attr("value")));
-                obj.p1[0] = parseFloat(($("#inputStraightLineP1X").attr("value")));
-                obj.p1[1] = parseFloat(($("#inputStraightLineP1Y").attr("value")));
+                obj.p0[0] = parseFloat($("#inputStraightLineP0X").attr("value"));
+                obj.p0[1] = parseFloat($("#inputStraightLineP0Y").attr("value"));
+                obj.p1[0] = parseFloat($("#inputStraightLineP1X").attr("value"));
+                obj.p1[1] = parseFloat($("#inputStraightLineP1Y").attr("value"));
 
             }
 
             if(obj instanceof Circle){
 
-                obj.center_point[0] = parseFloat(($("#inputCenterX").attr("value")));
-                obj.center_point[1] = parseFloat(($("#inputCenterY").attr("value")));
-                obj.radius = parseFloat(($("#inputRadius").attr("value")));
+                obj.center_point[0] = parseFloat($("#inputCenterX").attr("value"));
+                obj.center_point[1] = parseFloat($("#inputCenterY").attr("value"));
+                obj.radius = parseFloat($("#inputRadius").attr("value"));
 
             }
 
             if(obj instanceof ParametricCurve){
+                obj.t_min = parseFloat($("#inputMinT").attr("value"));
+                obj.t_max = parseFloat($("#inputMaxT").attr("value"));
                 obj.segments = parseFloat($("#inputSegments").attr("value"));
+                
+                obj.func_f = $("#inputParametricCurveX_t").attr("value");
+                obj.func_g = $("#inputParametricCurveY_t").attr("value");
             }
 
             // redraw the scene
@@ -140,23 +149,29 @@ define(["jquery", "straight_line", "circle", "parametric_curve"],
 
             if(obj instanceof StraightLine){
 
-                $("#inputStraightLineP0X").attr("value",parseFloat(obj.p0[0]));
-                $("#inputStraightLineP0Y").attr("value",parseFloat(obj.p0[1]));
-                $("#inputStraightLineP1X").attr("value",parseFloat(obj.p1[0]));
-                $("#inputStraightLineP1Y").attr("value",parseFloat(obj.p1[1]));
+                $("#inputStraightLineP0X").attr("value", parseFloat(obj.p0[0]));
+                $("#inputStraightLineP0Y").attr("value", parseFloat(obj.p0[1]));
+                $("#inputStraightLineP1X").attr("value", parseFloat(obj.p1[0]));
+                $("#inputStraightLineP1Y").attr("value", parseFloat(obj.p1[1]));
 
             }
 
             if(obj instanceof Circle){
 
-                $("#inputCenterX").attr("value",parseFloat(obj.center_point[0]));
-                $("#inputCenterY").attr("value",parseFloat(obj.center_point[1]));
-                $("#inputRadius").attr("value",parseFloat(obj.radius));
+                $("#inputCenterX").attr("value", parseFloat(obj.center_point[0]));
+                $("#inputCenterY").attr("value", parseFloat(obj.center_point[1]));
+                $("#inputRadius").attr("value", parseFloat(obj.radius));
 
             }
 
             if(obj instanceof ParametricCurve){
-                $("#inputSegments").attr("value",parseFloat(obj.segments));
+                $("#inputMinT").attr("value", parseFloat(obj.t_min));
+                $("#inputMaxT").attr("value", parseFloat(obj.t_max));
+                $("#inputSegments").attr("value", parseFloat(obj.segments));
+            
+                $("#inputParametricCurveX_t").attr("value", obj.func_f);
+                $("#inputParametricCurveY_t").attr("value", obj.func_g);
+
             }
 
         };
@@ -210,6 +225,8 @@ define(["jquery", "straight_line", "circle", "parametric_curve"],
          * event handler for "new paramtric curve button".
          */
         $("#btnNewParametricCurve").click( (function() {
+            var _x = randomX();
+            var _y = randomY();
         
             // create the actual circle and add it to the scene
             var style = { 
@@ -217,20 +234,43 @@ define(["jquery", "straight_line", "circle", "parametric_curve"],
                 color: randomColor()
             };
 
-            var f_t = function(t){
-                return parseFloat(350 + 100 * Math.sin(t));
-            };
+            var func_f = _x + " + 100 * Math.sin(t)"
 
-            var g_t = function(t){
-                return parseFloat(150 + 100 * Math.cos(t));
-            };
+            var func_g = _y + " + 100 * Math.cos(t)"
 
-            var p_curve = new ParametricCurve(0, 5, f_t , g_t , 20, style);
+            var p_curve = new ParametricCurve(0, 5, func_f , func_g , 2 + randomIntValue(18), style);
             scene.addObjects([p_curve]);
 
             // deselect all objects, then select the newly created object
             sceneController.deselect();
             sceneController.select(p_curve); // this will also redraw
+                        
+        }));
+
+        /*
+         * event handler for "new bezier curve button".
+         */
+        $("#btnNewBezierCurve").click( (function() {
+        
+            // create the actual circle and add it to the scene
+            var style = { 
+                width: Math.floor(Math.random()*3)+1,
+                color: randomColor()
+            };
+
+            var pointArr =[];
+            var p0 = [257,137];
+            var p1 = [150,203];
+            var p2 = [321,223];
+            var p3 = [200,300];
+            pointArr.push(p0,p1,p2,p3);
+
+            var b_curve = new BezierCurve(pointArr,2 + randomIntValue(18), style);
+            scene.addObjects([b_curve]);
+
+            // deselect all objects, then select the newly created object
+            sceneController.deselect();
+            sceneController.select(b_curve); // this will also redraw
                         
         }));
 

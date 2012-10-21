@@ -63,3 +63,17 @@ ul{
     width: 80px;
     float: left;
 }
+
+.evalInput{
+    float: left;
+}
+
+#inputParametricCurveX_t{
+    width: 160px;
+    margin-left: 5px;
+}
+
+#inputParametricCurveY_t{
+    width: 160px;
+    margin-left: 5px;
+}

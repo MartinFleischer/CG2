@@ -48,6 +48,9 @@
             <li>
               <button id="btnNewParametricCurve" type="button">New Parametric Curve</button>
             </li>      
+            <li>
+              <button id="btnNewBezierCurve" type="button">New Bezier Curve</button>
+            </li>
           </ul>
         </div>
 
@@ -72,7 +75,7 @@
             <li>
               <div class="lableContainer"><lable>p0Y:</lable></div>
               <input id="inputStraightLineP0Y" class="input maxY" type="number" name="Straight Line P0Y" min="20">
-            </input> 
+              </input> 
             </li>
             <li>
               <div class="lableContainer"><lable>p1X:</lable></div>
@@ -102,12 +105,22 @@
 
           <div id="propsParametricCurve" class="props">
             <li>
-              <div class="lableContainer"><lable>x(t):</lable></div>
-              <input id="inputParametricCurveX(t)" class="input maxX" type="number" name="Parametric Curve X(t)" min="20"></input> 
+              <div class="evalInput"><lable>x(t):</lable>
+                <input id="inputParametricCurveX_t" class="input maxX" type="number" name="Parametric Curve X(t)" min="20"></input> 
+              </div>
             </li>
             <li>
-              <div class="lableContainer"><lable>y(t):</lable></div>
-              <input id="inputParametricCurveY(t)" class="input maxY" type="number" name="Parametric CurveY (t)" min="20"></input> 
+              <div class="evalInput"><lable>y(t):</lable>
+                <input id="inputParametricCurveY_t" class="input maxY" type="number" name="Parametric CurveY (t)" min="20"></input> 
+              </div>
+            </li>
+            <li>
+              <div class="lableContainer"><lable>min t:</lable></div>
+              <input id="inputMinT" class="input min t" type="number" name="Min T" min="0"></input> 
+            </li>
+            <li>
+              <div class="lableContainer"><lable>max t:</lable></div>
+              <input id="inputMaxT" class="input max t" type="number" name="Max T" min="0"></input> 
             </li>
             <li>
               <div class="lableContainer"><lable>segments:</lable></div>
