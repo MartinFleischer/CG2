@@ -154,14 +154,19 @@ define(["jquery", "gl-matrix", "util", "webgl-debug",
                                                     shaders.fs_PerVertexColor() );
                 
                 // create some objects to be drawn
-                this.triangle = new Triangle(gl);
-                this.cube     = new Cube(gl);
-                this.band     = new Band(gl, { radius: 0.4, height: 0.2, segments: 50 } );
+                this.triangle       = new Triangle(gl);
+                this.cube           = new Cube(gl);
+                this.band           = new Band(gl, { radius: 0.4, height: 0.2, segments: 50, asWireframe: false } );
+                this.band_wireframe = new Band(gl, { radius: 0.4, height: 0.2, segments: 50, asWireframe: true } );
+                //this.band_wireframe = new Band(gl, { radius: 0.4, height: 0.2, segments: 50 } );
                 
                 // for the UI - this will be accessed directly by HtmlController
                 this.drawOptions = { "Triangle": true, 
                                      "Cube": false, 
                                      "Band": false,
+                                     "Wireframe": false,
+                                     "GL_DEPTH": true,
+                                     "CULL_FACE": false
                                    };
                 
             };
@@ -190,10 +195,7 @@ define(["jquery", "gl-matrix", "util", "webgl-debug",
 
                 // clear color and depth buffers
                 gl.clearColor(0.7, 0.7, 0.7, 1.0); 
-                gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); 
-                
-                // enable depth testing
-                gl.enable(gl.DEPTH_TEST);
+                gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);    
                 
                 // draw the objects
                 if(this.drawOptions["Triangle"]) {
@@ -205,6 +207,15 @@ define(["jquery", "gl-matrix", "util", "webgl-debug",
                 if(this.drawOptions["Band"]) {
                     this.band.draw(gl, this.prog_red);
                 };
+                if(this.drawOptions["Wireframe"]) {
+                    this.band_wireframe.draw(gl, this.prog_black);
+                };
+                if(this.drawOptions["GL_DEPTH"]){
+                    // enable depth testing
+                    gl.enable(gl.DEPTH_TEST);
+                } else{
+                    gl.disable(gl.DEPTH_TEST);
+                }
             };
             
             // initial transformation - tilt view by 25° from above
