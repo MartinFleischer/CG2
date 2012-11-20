@@ -91,12 +91,15 @@
             // draw the vertices as points
             gl.drawElements(gl.LINES, this.linesBuffer.numIndices(), gl.UNSIGNED_SHORT, 0);
         } else {
+            gl.enable(gl.POLYGON_OFFSET_FILL);
+            gl.polygonOffset(1.0, 1.0);
             // bind the attribute buffers
             this.coordsBuffer.bind(gl, program, "vertexPosition");
             this.triangleBuffer.bind(gl);
 
             // draw the vertices as points
             gl.drawElements(gl.TRIANGLES, this.triangleBuffer.numIndices(), gl.UNSIGNED_SHORT, 0);
+            gl.disable(gl.POLYGON_OFFSET_FILL);
         }
     };
 

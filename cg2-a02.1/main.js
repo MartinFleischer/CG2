@@ -98,6 +98,8 @@ define(["jquery", "gl-matrix", "util", "webgl-debug",
             // rotation around Y axis, depending on animation time
             var angle = t/1000 * animation.customSpeed / 180*Math.PI; // 10 deg/sec, in radians
             mat4.rotate(matrix, angle, [0,1,0]);
+            // rotation around X axis, depending on animation time
+            //mat4.rotate(matrix, angle, [1,0,0]);
             
             // set the scene's transformation to what we have calculated
             scene.transformation = matrix;
@@ -195,7 +197,21 @@ define(["jquery", "gl-matrix", "util", "webgl-debug",
 
                 // clear color and depth buffers
                 gl.clearColor(0.7, 0.7, 0.7, 1.0); 
-                gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);    
+                gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);  
+
+                // enable/disable depth testing
+                if(this.drawOptions["GL_DEPTH"]){                    
+                    gl.enable(gl.DEPTH_TEST);
+                } else{
+                    gl.disable(gl.DEPTH_TEST);
+                };
+
+                // enable/disable backface culling
+                if(this.drawOptions["CULL_FACE"]){
+                    gl.enable(gl.CULL_FACE);
+                } else{
+                    gl.disable(gl.CULL_FACE);
+                };
                 
                 // draw the objects
                 if(this.drawOptions["Triangle"]) {
@@ -210,12 +226,6 @@ define(["jquery", "gl-matrix", "util", "webgl-debug",
                 if(this.drawOptions["Wireframe"]) {
                     this.band_wireframe.draw(gl, this.prog_black);
                 };
-                if(this.drawOptions["GL_DEPTH"]){
-                    // enable depth testing
-                    gl.enable(gl.DEPTH_TEST);
-                } else{
-                    gl.disable(gl.DEPTH_TEST);
-                }
             };
             
             // initial transformation - tilt view by 25° from above
