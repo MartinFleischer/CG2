@@ -361,13 +361,13 @@ define(["jquery", "gl-matrix", "util", "webgl-debug",
                             mat4.rotate(this.world.transformation, angle, [1,0,0]);
                             break;
                         case "body":
-                            mat4.rotate(body.transformation, angle, [0,1,0]);
+                            mat4.rotate(body.transformation, angle, [0,0,1]);
                             break;
                         case "neckY":
-                            mat4.rotate(neck.transformation, angle, [0,1,0]);
+                            mat4.rotate(neck.transformation, angle, [1,0,0]);
                             break;
                         case "neckX":
-                            mat4.rotate(neck.transformation, angle, [1,0,0]);
+                            mat4.rotate(neck.transformation, angle, [0,1,0]);
                             break;
                         case "hipLeftY":
                             mat4.rotate(hipLeft.transformation, angle, [1,0,0]);
@@ -452,21 +452,23 @@ define(["jquery", "gl-matrix", "util", "webgl-debug",
                 var speed = deltaT/1000*this.customSpeed;
                 
                 // rotate around Y with relative speed 3
-                scene.rotateJoint("worldY", 0.2*speed);
+                //scene.rotateJoint("worldY", 0.2*speed);
 
-                // walk
-                var bodySpeed = 0.4*speed;
+                // walking
+                var bodySpeed = 0.2*speed;
                 var hipSpeed = speed;
                 var kneeSpeed = 3*speed;
-                var lowestLegSpeed = 2*speed;
-                var footSpeed = 3.5*speed
+                var lowestLegSpeed = 1.5*speed;
+                var footSpeed = 3*speed
 
                 if(t%3000<750){
+                    scene.rotateJoint("body",  bodySpeed);
                     scene.rotateJoint("hipLeftY",  hipSpeed);
                     scene.rotateJoint("kneeLeftY", -kneeSpeed);
                     scene.rotateJoint("lowestLegLeftY", -lowestLegSpeed);
                     scene.rotateJoint("footLeftY", footSpeed);
                 }else if(t%3000>750 && t%3000<1500){
+                    scene.rotateJoint("body",  -bodySpeed);
                     scene.rotateJoint("hipLeftY", -hipSpeed);
                     scene.rotateJoint("kneeLeftY", kneeSpeed);
                     scene.rotateJoint("lowestLegLeftY", lowestLegSpeed);
@@ -474,18 +476,33 @@ define(["jquery", "gl-matrix", "util", "webgl-debug",
                 }
 
                 if(t%3000>1500 && t%3000<2250){
+                    scene.rotateJoint("body",  -bodySpeed);
                     scene.rotateJoint("hipRightY", hipSpeed);
                     scene.rotateJoint("kneeRightY",-kneeSpeed);
                     scene.rotateJoint("lowestLegRightY", -lowestLegSpeed);
                     scene.rotateJoint("footRightY", footSpeed);
                 }else if(t%3000>2250){
+                    scene.rotateJoint("body",  bodySpeed);
                     scene.rotateJoint("hipRightY", -hipSpeed);
                     scene.rotateJoint("kneeRightY", kneeSpeed);
                     scene.rotateJoint("lowestLegRightY", lowestLegSpeed);
                     scene.rotateJoint("footRightY", -footSpeed);
                 }
 
-                
+                var headSpeed = 0.5*speed;
+
+                // looking
+                if(t%20000<2500){
+                    scene.rotateJoint("neckX", -headSpeed);
+                }else if(t%20000>3500 && t%20000<5000){
+                    scene.rotateJoint("neckY", headSpeed);
+                }else if(t%20000>5000 && t%20000<8000){
+                    scene.rotateJoint("neckY", -headSpeed);
+                }else if(t%20000>8500 && t%20000<10000){
+                    scene.rotateJoint("neckY", headSpeed);
+                }else if(t%20000>13000 && t%20000<15500){
+                    scene.rotateJoint("neckX", headSpeed);
+                }
             
                 // redraw
                 scene.draw();
