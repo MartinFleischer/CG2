@@ -86,7 +86,7 @@
             // bind the attribute buffers
             this.coordsBuffer.bind(gl, program, "vertexPosition");
             this.linesBuffer.bind(gl);
-            this.colorBuf.bind(gl, program, "prog_red");
+            //this.colorBuf.bind(gl, program, "prog_red");
 
             // draw the vertices as points
             gl.drawElements(gl.LINES, this.linesBuffer.numIndices(), gl.UNSIGNED_SHORT, 0);
