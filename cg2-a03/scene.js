@@ -48,13 +48,21 @@ define(["jquery", "gl-matrix",
                                                  shaders("phong_fs")  );
                 prog_phong.use();
                 prog_phong.setUniform("ambientLight", "vec3", [0.4,0.4,0.4]);
-                                                 
+                   
+                var prog_planet = new Program(gl, shaders("planet_vs"), 
+                                                  shaders("planet_fs") );
+                prog_planet.use();
+                prog_planet.setUniform("fragColor", "vec4", [0.0, 0.0, 1.0, 1.0]);
+                prog_planet.setUniform("ambientLight", "vec3", [0.4,0.4,0.4]);
+
+
                 // register all programs in this list for setting the projection matrix later
-                this.programs = [prog_blue, prog_phong];
+                this.programs = [prog_blue, prog_phong,prog_planet];
                 
+                // TODO second light
                 // light source 
-                this.sun       = new light.DirectionalLight("light",  {"direction": [-1,0,0], "color": [1,1,1] } ); 
-                this.sunNode   = new SceneNode("SunNode", [this.sun], prog_phong);
+                this.sun       = new light.DirectionalLight("light",  {"direction": [-1,0,0], "color": [1,1,1] }, [prog_planet,prog_phong] ); 
+                this.sunNode   = new SceneNode("SunNode", [this.sun], prog_planet);
                                 
                 // equator ring for orientation
                 this.ringMaterial = new material.PhongMaterial("material", 
@@ -73,11 +81,24 @@ define(["jquery", "gl-matrix",
                                                                     {"ambient":   [0.5,0.3,0.3],
                                                                      "diffuse":   [0.8,0.2,0.2],
                                                                      "specular":  [0.4,0.4,0.4],
-                                                                     "shininess": 30
+                                                                     "shininess": 50
                                                                      });
                 this.sphereGeometry = new parametric.Sphere(gl, 1);
-                this.sphereNode   = new SceneNode("PlanetNode", [this.sphereMaterial, this.sphereGeometry], prog_phong);
-                this.sphereSurfaceTex = new texture.Texture2D(gl, "./textures/earth_month04.jpg")
+                this.sphereNode   = new SceneNode("PlanetNode", [this.sphereMaterial, this.sphereGeometry], prog_planet);
+                // textures
+                this.sphereDaySurfaceTex = new texture.Texture2D(gl, "./textures/earth_month04_2048.jpg");
+                this.sphereNightSurfaceTex = new texture.Texture2D(gl, "./textures/earth_at_night_2048.jpg");
+                this.sphereNightBathymetryTex = new texture.Texture2D(gl, "./textures/earth_bathymetry_2048.jpg");
+                this.sphereCloudsTex = new texture.Texture2D(gl, "./textures/earth_clouds_2048.jpg");
+                var scene = this;
+                texture.onAllTexturesLoaded(function(){
+                    prog_planet.use();
+                    prog_planet.setTexture("daylightTexture", 0, scene.sphereDaySurfaceTex);
+                    prog_planet.setTexture("nightlightTexture", 1, scene.sphereNightSurfaceTex);
+                    prog_planet.setTexture("bathymetryTexture", 2, scene.sphereNightBathymetryTex);
+                    prog_planet.setTexture("cloudsTexture", 3, scene.sphereCloudsTex);
+                    scene.draw();
+                });
 
                 // Wireframe
                 this.sphereWireGeometry = new parametric.Sphere(gl, 1, { "wireframe": true});
@@ -99,7 +120,7 @@ define(["jquery", "gl-matrix",
                 this.camera.projectionMatrix = mat4.perspective(45, aspectRatio, 0.01, 100);
                 
                 // for the UI - this will be accessed directly by HtmlController
-                this.drawOptions = { "Planet": true, "Wireframe": false, "Ring": true};
+                this.drawOptions = { "Planet": true, "Wireframe": false, "Ring": true, "Night Lights": true, "Clouds": false};
                 
             }; // Scene constructor
             
@@ -113,6 +134,24 @@ define(["jquery", "gl-matrix",
                 this.ringNode.visible = this.drawOptions["Ring"];
                 this.sphereNode.visible = this.drawOptions["Planet"];
                 this.sphereWireNode.visible = this.drawOptions["Wireframe"];
+
+                // Draw options
+                var prog_planet = this.programs[2];
+                if(this.drawOptions["Night Lights"]){
+                    prog_planet.use();
+                    prog_planet.setUniform("nightLights", "bool", true);
+                }else {
+                    prog_planet.use();
+                    prog_planet.setUniform("nightLights", "bool", false);
+                };
+
+                if(this.drawOptions["Clouds"]){
+                    prog_planet.use();
+                    prog_planet.setUniform("clouds", "bool", true);
+                }else {
+                    prog_planet.use();
+                    prog_planet.setUniform("clouds", "bool", false);
+                };
                 
                 // set camera's projection matrix in all programs
                 for(var i=0; i<this.programs.length; i++) {

@@ -14,12 +14,14 @@
 define(["text!shaders/minimal.vs",      "text!shaders/frag_color.fs",
         "text!shaders/vertex_color.vs", "text!shaders/vertex_color.fs",
         "text!shaders/texture.vs",      "text!shaders/texture.fs",
-        "text!shaders/phong.vs",        "text!shaders/phong.fs"
+        "text!shaders/phong.vs",        "text!shaders/phong.fs",
+        "text!shaders/planet.vs",        "text!shaders/planet.fs"
        ], 
        (function( minimal_vs,      frag_color_fs, 
                   vertex_color_vs, vertex_color_fs,
                   texture_vs,      texture_fs,
-                  phong_vs,        phong_fs
+                  phong_vs,        phong_fs,
+                  planet_vs,       planet_fs
                  ) {
 
     "use strict";
