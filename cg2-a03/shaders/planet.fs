@@ -102,13 +102,21 @@ vec3 phong(vec3 pos, vec3 n, vec3 v, LightSource light, PhongMaterial material) 
     float rdotv = max( dot(r,v), 0.0);
     
     // specular contribution
-    float reflectionFactor = 0.2 + texture2D(bathymetryTexture, texCoords).r / 1.0;
-    float shininess = material.shininess;
-    vec3 specular = ( material.specular * light.color * pow(rdotv, shininess) * reflectionFactor );
+    float reflectionColor;
+    if(clouds){
+        reflectionColor = (texture2D(bathymetryTexture, texCoords).r + texture2D(cloudsTexture, texCoords).r) / 2.0;
+    }else{
+        reflectionColor = texture2D(bathymetryTexture, texCoords).r;
+    }
+    //return vec3(reflectionColor,reflectionColor,reflectionColor);
+    float reflectionFactor = reflectionColor;
+    float shininess = material.shininess + (100.0 * (1.0 - reflectionFactor)) ;
+    vec3 specularReflexion = material.specular * reflectionFactor;
+    vec3 specular = ( specularReflexion * light.color * pow(rdotv, shininess) );
 
     // return sum of all contributions
     if(nightLights)
-        return ambient + color+ specular; 
+        return ambient + color + specular; 
 
     if(ndotl<=0.0){
             return ambient;
